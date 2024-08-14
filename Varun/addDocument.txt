@@ -1,0 +1,84 @@
+{
+	"NGOAddDocumentBDO": {
+		"cabinetName": "mahindra23jan",
+		"folderIndex": "240",
+		"documentName": "Restweb postman",
+		"userDBId": "",
+		"volumeId": "1",
+		"author": "",
+		"accessType": "P",
+		"createdByAppName": "txt",
+		"enableLog": "Y",
+		"versionFlag": "",
+		"textAlsoFlag": "",
+		"ownerType": "U",
+		"ownerIndex": "",
+		"FTSDocumentIndex": "",
+		"FTSFlag": "",
+		"groupIndex": "",
+		"ODMADocumentIndex": "",
+		"textISIndex": "",
+		"validateDocumentImage": "",
+		"versionComment": "",
+		"nameLength": "",
+		"creationDateTime": "",
+		"duplicateName": "",
+		"thumbNailFlag": "N",
+		"imageData": "",
+		"encrFlag": "N",
+		"passAlgoType": "1",
+		"userName": "supervisor2",
+		"userPassword": "supervisor351",
+		"comment": "add comment",
+		"authToken": "",
+		"authTokenType": "",
+		"locale": "en_US",
+		"NGOAddDocDataDefCriterionBDO": {
+			"dataDefIndex": "42",
+			"dataDefName": "TestDataClass",
+			"NGOAddDocDataDefCriteriaDataBDO": [
+				{
+					"indexId": "43",
+					"indexType": "I",
+					"indexValue": "123"
+				},
+				{
+					"indexId": "44",
+					"indexType": "S",
+					"indexValue": "hello newgen"
+				},
+				{
+					"indexId": "45",
+					"indexType": "S",
+					"indexValue": "24"
+				},
+				{
+					"indexId": "46",
+					"indexType": "S",
+					"indexValue": "24",
+					"__text": "OmniDocs REST Web Services Developer Guide Version: 11.0.0.8 Page 10"
+				}
+			]
+		},
+		"NGOAddDocKeywordsCriterionBDO": {
+			"keyword": [
+				"Key1",
+				"key2"
+			]
+		},
+		"GlobalIndexes": {
+			"Field": [
+				{
+					"indexId": "65",
+					"indexType": "I",
+					"indexValue": "23"
+				},
+				{
+					"indexId": "54",
+					"indexType": "D",
+					"indexValue": "23/01/2022"
+				}
+			]
+		}
+	}
+}
