@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+
+<WFReusableComponent_Input>
+
+    <Option>WFSSelectWithColumnNames</Option>
+
+    <EngineName>ibps4_deepakrawat</EngineName>
+
+    <SessionID>-1398895402</SessionID>
+
+    <Query></Query>
+
+    <TableName>customtable</TableName>
+
+    <Columns>
+
+        <Column>
+
+            <ColumnName>NAME</ColumnName>
+
+        </Column>
+
+        <Column>
+
+            <ColumnName>CLASS</ColumnName>
+
+        </Column>
+
+        <Column>
+
+            <ColumnName>ID</ColumnName>
+
+        </Column>
+
+    </Columns>
+
+    <RecordCriteria>
+
+        <Columns>
+
+            <Column>
+
+                <ColumnName>ID</ColumnName>
+
+                <ColumnValue>1</ColumnValue>
+
+                <ColumnType>3</ColumnType>
+
+                <LogicalOperator>=</LogicalOperator>
+
+            </Column>
+
+            <Column>
+
+                <Operator>OR</Operator>
+
+                <ColumnName>Name</ColumnName>
+
+                <ColumnValue>Deepak</ColumnValue>
+
+                <ColumnType>10</ColumnType>
+
+                <LogicalOperator>!=</LogicalOperator>
+
+            </Column>
+
+        </Columns>
+
+    </RecordCriteria>
+
+    <BatchInfo>
+
+        <BatchSize>100</BatchSize>
+
+    </BatchInfo>
+
+    <SortInfo>
+
+        <Columns>
+
+            <Column>
+
+                <ColumnName>id</ColumnName>
+
+                <SortOrder>D</SortOrder>
+
+            </Column>
+
+        </Columns>
+
+    </SortInfo>
+
+    <LastValue>4</LastValue>
+
+    <LastValueType>3</LastValueType>
+
+</WFReusableComponent_Input>
