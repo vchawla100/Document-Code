@@ -1,97 +1,30 @@
-<?xml version="1.0"?>
+function calculateUBO() {
+    var lvl = [1, 2, 3, 3, 4, 2, 1];
+    var prcnt = [33, 33, 50, 50, 20, 10, 40];
 
-<WFReusableComponent_Input>
+    var st = [];
+    st.push([0.0, 100.0]);
 
-    <Option>WFSSelectWithColumnNames</Option>
+    for (var i = 0; i < lvl.length; i++) {
+        while (lvl[i] <= st[st.length - 1][0]) {
+            st.pop();
+        }
 
-    <EngineName>ibps4_deepakrawat</EngineName>
+        var ubo = (prcnt[i] / 100) * st[st.length - 1][1];
 
-    <SessionID>-1398895402</SessionID>
+        st.push([lvl[i], ubo]);
 
-    <Query></Query>
+        console.log("lvl:" + lvl[i] + ", prcnt: " + prcnt[i] + ", ubo: " + ubo);
+        printSt(st);
+        console.log();
+    }
+}
 
-    <TableName>customtable</TableName>
+function printSt(st) {
+    for (var i = 0; i < st.length; i++) {
+        console.log(" [" + st[i][0] + "," + st[i][1] + "]");
+    }
+}
 
-    <Columns>
-
-        <Column>
-
-            <ColumnName>NAME</ColumnName>
-
-        </Column>
-
-        <Column>
-
-            <ColumnName>CLASS</ColumnName>
-
-        </Column>
-
-        <Column>
-
-            <ColumnName>ID</ColumnName>
-
-        </Column>
-
-    </Columns>
-
-    <RecordCriteria>
-
-        <Columns>
-
-            <Column>
-
-                <ColumnName>ID</ColumnName>
-
-                <ColumnValue>1</ColumnValue>
-
-                <ColumnType>3</ColumnType>
-
-                <LogicalOperator>=</LogicalOperator>
-
-            </Column>
-
-            <Column>
-
-                <Operator>OR</Operator>
-
-                <ColumnName>Name</ColumnName>
-
-                <ColumnValue>Deepak</ColumnValue>
-
-                <ColumnType>10</ColumnType>
-
-                <LogicalOperator>!=</LogicalOperator>
-
-            </Column>
-
-        </Columns>
-
-    </RecordCriteria>
-
-    <BatchInfo>
-
-        <BatchSize>100</BatchSize>
-
-    </BatchInfo>
-
-    <SortInfo>
-
-        <Columns>
-
-            <Column>
-
-                <ColumnName>id</ColumnName>
-
-                <SortOrder>D</SortOrder>
-
-            </Column>
-
-        </Columns>
-
-    </SortInfo>
-
-    <LastValue>4</LastValue>
-
-    <LastValueType>3</LastValueType>
-
-</WFReusableComponent_Input>
+// Call the function
+calculateUBO();
