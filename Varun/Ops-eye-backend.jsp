@@ -6,7 +6,6 @@
 
 <jsp:useBean id="wfsession" class="com.newgen.wfdesktop.session.WFSession" scope="session"/>
 
-
 <%
 	
 	try{
@@ -26,10 +25,9 @@
 		
 		// Query logic starts
 		
-		String op = "demoOP::", query = "", strArray[];
+		String op = "", query = "", strArray[];
 		
-		query = "SELECT ProcessName FROM PROCESSDEFTABLE WHERE ProcessState = 'Enabled'";
-		
+		query = "SELECT ProcessName FROM PROCESSDEFTABLE WHERE ProcessState = 'Enabled'";		
 		
 		String inputXML = "<?xml version=\"1.0\"?>"+
 		"<APSelectWithColumnNames_Input>"+ 
@@ -56,11 +54,24 @@
 			if (!record.trim().isEmpty()) {
 				WFXmlResponse parsergetlist = new WFXmlResponse(record + "</Record>");
 		
-				String ProcessName = parsergetlist.getVal("ProcessName");			
+				// JSON logic starts
+
+				String processId = parsergetlist.getVal("pID");
+				String processName = parsergetlist.getVal("ProcessName");
+				String WSName = parsergetlist.getVal("WSName");
 				
-				op += ProcessName;
+				String pending = parsergetlist.getVal("pending");
 				
-				
+				String oldest = parsergetlist.getVal("oldest");
+				String trend = parsergetlist.getVal("trend");
+
+				String slaBreaches = parsergetlist.getVal("slaBreaches");
+
+				String oldestPending = parsergetlist.getVal("oldestPending");
+
+				op += processId +" | "+ processName +" | "+ WSName +" | "+ pending +" | "+ oldest +" | "+ trend +" | "+ slaBreaches +" | "+ oldestPending;
+			
+				op += " ~ ";
 				
 				
 			}
