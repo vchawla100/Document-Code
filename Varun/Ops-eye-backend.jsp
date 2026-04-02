@@ -511,40 +511,13 @@
 			
 			} else if("SELECTED_PROCESS_PENDING".equals(source)){
 				
-				query = "SELECT processinstanceid as WINAME FROM QUEUEVIEW WITH (NOLOCK) WHERE queuename = '"+ queueName +"'";
-				
-				inputXML = "<?xml version=\"1.0\"?>"+
-				"<APSelectWithColumnNames_Input>"+ 
-				"<Option>APSelectWithColumnNames</Option>"+
-				"<EngineName>" + sCabName + "</EngineName> "+
-				"<SessionId>" + sSessionId + "</SessionId>"+
-				"<Query>" + query + "</Query>"+
-				"</APSelectWithColumnNames_Input>";		
-				
-				sOutputXml = WFCallBroker.execute(inputXML,sJtsIp,iJtsPort,1);
-				
-				parseString = sOutputXml.substring(sOutputXml.indexOf("<Records>")+"<Records>".length(),sOutputXml.indexOf("</Records>"));
-				
-				strArray = parseString.split("</Record>");	
-				
-				for (String record : strArray) {
-					if (!record.trim().isEmpty()) {
-						WFXmlResponse parsergetlist = new WFXmlResponse(record + "</Record>");
-						
-						String WINAME = parsergetlist.getVal("WINAME");						
-						
-						//  '"ERRORWI|123|"+ "WINAME1" +"|"+ "AF_Card_CRU" +"~"'
-						
-						op += "ERRORWI|123|"+ WINAME +"|"+ queueName +"~";
-					}
-				}
+				op += "ERRORWI|123|"+ "WINAME1" +"|"+ "AF_Card_CRU" +"~";
 				
 				
 			} else if("TOP_STAT_LAST_HOUR_EXT".equals(source)){
 				
 				query = "SELECT processinstanceid AS WINAME, queuename AS WSName FROM QUEUEVIEW WITH (NOLOCK) WHERE CreatedDatetime >= DATEADD(HOUR, -1, GETDATE()) AND createdbyname IN ('mqserviceuser') ORDER BY processinstanceid";
 			
-				
 				inputXML = "<?xml version=\"1.0\"?>"+
 				"<APSelectWithColumnNames_Input>"+ 
 				"<Option>APSelectWithColumnNames</Option>"+
