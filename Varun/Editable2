@@ -1,1 +1,100 @@
-PROCESS | p0 | PersonalLoanS | false ~ PROCESS | p1 | CreditCard | false ~ PROCESS | p2 | RLOS | false ~ PROCESS | p3 | PC | false ~ PROCESS | p4 | RAOP | false ~ PROCESS | p5 | CMS | false ~ PROCESS | p6 | CMP | false ~ PROCESS | p7 | CBP | false ~ PROCESS | p8 | ML | false ~ PROCESS | p9 | DAC | false ~ PROCESS | p10 | DigitalOnBoarding | false ~ PROCESS | p11 | BSR | false ~ PROCESS | p12 | RAKSIGN | false ~ PROCESS | p13 | Test | false ~ PROCESS | p14 | iRBL | false ~ PROCESS | p15 | CSR_BT | false ~ PROCESS | p16 | CSR_CCB | false ~ PROCESS | p17 | CSR_CCC | false ~ PROCESS | p18 | CSR_MR | false ~ PROCESS | p19 | CSR_OCC | false ~ PROCESS | p20 | CSR_RR | false ~ PROCESS | p21 | DSR_DCB | false ~ PROCESS | p22 | DSR_MR | false ~ PROCESS | p23 | DSR_ODC | false ~ PROCESS | p24 | GSR_LCOL | false ~ PROCESS | p25 | ODDD | false ~ PROCESS | p26 | FPU | false ~ PROCESS | p27 | DA | false ~ PROCESS | p28 | TF | false ~ PROCESS | p29 | SRB | false ~ PROCESS | p30 | AO | false ~ PROCESS | p31 | SRM | false ~ PROCESS | p32 | EPP | false ~ PROCESS | p33 | SAR | false ~ PROCESS | p34 | BAIS | false ~ PROCESS | p35 | Digital_CC | false ~ PROCESS | p36 | DigitalAO | false ~ PROCESS | p37 | TT | false ~ PROCESS | p38 | TL | false ~ PROCESS | p39 | SRO | false ~ PROCESS | p40 | RBL | false ~ PROCESS | p41 | Test123 | false ~ PROCESS | p42 | RMT | false ~ PROCESS | p43 | OECD | false ~ PROCESS | p44 | RAO | false ~ PROCESS | p45 | TWC | false ~ PROCESS | p46 | CAC | false ~ PROCESS | p47 | CU | false ~ PROCESS | p48 | TAO | false ~ PROCESS | p49 | Dummy | false ~ PROCESS | p50 | Digital_PL | false ~ PROCESS | p51 | DBO | false ~ PROCESS | p52 | CPMS | false ~ PROCESS | p53 | TS | false ~ PROCESS | p54 | NBTL | false ~ PROCESS | p55 | HR_OB | false ~ PROCESS | p56 | EIBOR | false ~ PROCESS | p57 | CourtOrder | false ~ PROCESS | p58 | KYC_Remediation | false ~ PROCESS | p59 | DBS | false ~ PROCESS | p60 | MER_OB | false ~ PROCESS | p61 | demo_ps | false ~ PROCESS | p62 | Demo_R_ps | false ~ PROCESS | p63 | RF | false ~ PROCESS | p64 | CCA | false ~ PROCESS | p65 | AF | false ~ PROCESS | p66 | RAK_Inv | false ~ PROCESS | p67 | ROD | false ~ PROCESS | p68 | RequestApproval | false ~ PROCESS | p69 | CAP | false ~ PROCESS | p70 | ApprovalProcessDemo | false ~
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ page import="java.io.*,java.util.*"%>
+<%@ page import="java.text.*"%>
+<%@ page import="java.net.*"%>
+<%@ page import="javax.servlet.*"%>
+<%@ page import="com.newgen.custom.wfdesktop.xmlapi.*" %>
+<%@ page import="com.newgen.custom.wfdesktop.util.*" %>
+<%@ page import="com.newgen.custom.wfdesktop.exception.*" %>
+
+<%@ page import="com.newgen.omni.jts.cmgr.XMLParser" %>  
+<%@ page import="com.newgen.wfdesktop.xmlapi.WFCallBroker"%>
+<%@ page import="com.newgen.omni.wf.util.app.NGEjbClient" %>
+<%@ page import="com.newgen.encryption.PropertiesEncryption" %>
+<%@ page import="java.math.*"%>
+<%@ include file="Log.process"%>
+
+
+
+<%
+	
+	try {
+	
+		String params = request.getParameter("params");		
+		String reqType = params.split("~")[0];
+	
+	
+		Properties prop = new Properties();
+		prop.load(new FileInputStream(System.getProperty("user.dir")+"/CollectionsConfig.properties"));
+
+		String strCabName=prop.getProperty("CABINETNAME");
+		String strActiveCabName=prop.getProperty("ACTIVECABINETNAME");
+		String strJtsAddress=prop.getProperty("JTSIP");
+		String strJTSPort=prop.getProperty("JTSPORT");
+		int iJTSPort=Integer.parseInt(strJTSPort);
+		String strUserName=prop.getProperty("USERNAME");
+		String strPassword=prop.getProperty("PASSWORD");
+		
+		XMLParser xmlParserData=null;
+		XMLParser objXmlParser=null;
+		
+		boolean sessionPresent=false;
+		String inputXMLConnect="";
+		String outputXMLConnect ="";
+	
+		// Checking whether the session exists in WFSESSIONVIEW
+		String paramsCheck = "USERNAME=="+strUserName, sSessionID = "";
+		String inputXmlForSessionIndex="<?xml version='1.0'?><APSelectWithNamedParam_Input><Option>APSelectWithNamedParam</Option><Query>SELECT S.SessionID FROM WFSESSIONVIEW S with (nolock),PDBUser U with (nolock) WHERE S.UserID=U.UserIndex AND UserName=:USERNAME</Query><Params>"+paramsCheck+"</Params><EngineName>"+strCabName+"</EngineName></APSelectWithNamedParam_Input>";
+		
+		WriteLog("inputXmlForSessionIndex"+inputXmlForSessionIndex);
+		
+		String outPutXmlForSessionIndex = WFCallBroker.execute(inputXmlForSessionIndex,strJtsAddress,iJTSPort,1);
+		
+		WriteLog("outPutXmlForSessionIndex"+outPutXmlForSessionIndex);
+		
+		xmlParserData.setInputXML((outPutXmlForSessionIndex));
+		String mainCodeValue = xmlParserData.getValueOf("MainCode");
+		int totalSessionCount =Integer.parseInt(xmlParserData.getValueOf("TotalRetrieved"));
+		
+		if(mainCodeValue.equals("0") && totalSessionCount>0){
+			sSessionID=xmlParserData.getValueOf("SessionID");
+			WriteLog("Session already exist"+sSessionID);
+			sessionPresent=true;
+		}
+		else{
+			WriteLog("creating new session id.. ");
+			inputXMLConnect = "<? Xml version=\"1.0\"?><WMConnect_Input><Option>WMConnect</Option><EngineName>"+strCabName+"</EngineName><ApplicationInfo>"+strJtsAddress+"</ApplicationInfo><Participant><Name>"+strUserName+"</Name><Password>"+strPassword+"</Password><Scope></Scope><UserExist>N</UserExist><ParticipantType>U</ParticipantType></Particpant></WMConnect_Input>";
+
+			WriteLog("inputXMLConnect..."+inputXMLConnect);
+			
+			outputXMLConnect = WFCallBroker.execute(inputXMLConnect,strJtsAddress,iJTSPort,1);
+			WriteLog("outputXMLConnect..."+outputXMLConnect);
+			xmlParserData.setInputXML((outputXMLConnect));
+			pageContext.setAttribute("USERNAME",prop.getProperty("USERNAME"));
+			String mainCodeValue1 = xmlParserData.getValueOf("MainCode");
+			if(mainCodeValue1.equals("0")){
+				WriteLog("sessionid created.. "+xmlParserData.getValueOf("SessionId"));
+				sSessionID =xmlParserData.getValueOf("SessionId");
+				sessionPresent=true;
+			}
+		}
+		
+		if(sessionPresent){
+			
+			
+			
+			
+			
+		}
+		
+		
+	
+	} 
+	catch(Exception e){    		
+		// WriteLog("Exception occured::" + e);
+		out.println("Exception occured::" + e);
+	}
+
+%>
+
