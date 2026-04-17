@@ -1,4 +1,21 @@
+<!--------------------------------------------------------------------------------------------------------------------------------------
 
+NEWGEN SOFTWARE TECHNOLOGIES LIMITED
+Group                         :           Application –Projects
+Project/Product         	  :           RAKBank Collections
+Application                   : 
+Module                        : 
+File Name                     : 		  index.jsp
+Author                        :           Ankit,Sajan
+Date (dd/mm/yyyy)             :           01-11-2017
+Description                   : 
+---------------------------------------------------------------------------------------------------------------------------------------
+
+CHANGE HISTORY
+
+---------------------------------------------------------------------------------------------------------------------------------------
+Problem No/CR No              Change Date            Changed By             Change Description
+-------------------------------------------------------------------------------------------------------------------------------------->
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@ page import="java.io.*,java.util.*"%>
 <%@ page import="java.text.*"%>
@@ -15,36 +32,199 @@
 <%@ page import="java.math.*"%>
 <%@ include file="Log.process"%>
 
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="docstyle.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+	<script type="text/javascript">
+$(window).load(function() {
+     $(".loader").fadeOut(500);
+    });
+</script>
+<script type="text/javascript">
+      document.onkeydown = function(e) {
+      // keycode for F5 function
+      if (e.keyCode === 116) {
+        return false;
+      }
+      // keycode for backspace
+      if (e.keyCode === 8) {
+        // try to cancel the backspace
+        return false;
+      }
+    };
+</script>
+<script type="text/javascript">
+        window.history.forward();
+        function noBack()
+        {
+            window.history.forward();
+        }
+</script>
+</head>
+<style>
+a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px px
+}
 
+a:hover {
+    color: blue;
+}
 
+a:active {
+    color: blue;
+}
+
+a:link {
+    color: green;
+}
+.previous {
+    color: green;
+}
+
+.next {
+    color: green;
+}
+
+.round {
+    border-radius: 50%;
+}
+
+<!--Kamran-->
+th { 
+	padding:8px;
+}
+
+td {
+	overflow:hidden;
+	white-space:nowrap;
+	padding:5px;
+	text-align: left;
+}
+
+#documentlist{
+	border-collapse:collapse;
+	width: 100%
+}
+
+#documentlist td, #documentlist th{
+	border: 1px solid #ddd;
+	padding: 5px;
+	font-size: 11px;
+}
+
+#documentlist tr:nth-child(even){
+	background-color: #f2f2f2;
+}
+
+#documentlist th{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: left;
+	background-color: #04AA6D;
+	color: white;
+}
+<!--End-->
+
+</style>
+<body onload="noBack();">
+<div id="loader" class="loader"><img src='\ODarchival\images\progress.gif'></div>
 <%
+	//request.getSession(false);
+	WriteLog("Remote Address "+request.getRemoteAddr());
+	String sessionId=session.getId();
 	
-	try {
+	WriteLog("sessionId ::"+sessionId);
 	
-		String params = request.getParameter("params");		
-		String reqType = params.split("~")[0];
-	
-	
-		Properties prop = new Properties();
-		prop.load(new FileInputStream(System.getProperty("user.dir")+"/CollectionsConfig.properties"));
+    LinkedHashMap<Integer,String> nTreeMap=new LinkedHashMap<Integer,String>();
+	LinkedHashMap<Integer,String> mapToDisplay=new LinkedHashMap<Integer,String>();
+	LinkedHashMap<Integer,String> localMap=new LinkedHashMap<Integer,String>();
+	if(session.getAttribute("localMap")!=null)
+	{
+		WriteLog("InTopmostIf");
+		localMap=(LinkedHashMap<Integer,String>)session.getAttribute("localMap");
+	}
+	int startIndex=0;
+	int endIndex=0;
+	int pageNo=0;
+	Properties prop =null;
+	prop=new Properties();
+	prop.load(new FileInputStream(System.getProperty("user.dir")+"/CollectionsConfig.properties"));
 
-		String strCabName=prop.getProperty("CABINETNAME");
-		String strActiveCabName=prop.getProperty("ACTIVECABINETNAME");
-		String strJtsAddress=prop.getProperty("JTSIP");
-		String strJTSPort=prop.getProperty("JTSPORT");
-		int iJTSPort=Integer.parseInt(strJTSPort);
-		String strUserName=prop.getProperty("USERNAME");
-		String strPassword=prop.getProperty("PASSWORD");
-		
-		XMLParser xmlParserData=null;
-		XMLParser objXmlParser=null;
-		
-		boolean sessionPresent=false;
-		String inputXMLConnect="";
-		String outputXMLConnect ="";
+	String strCabName=prop.getProperty("CABINETNAME");
+	String strActiveCabName=prop.getProperty("ACTIVECABINETNAME");
+	String strJtsAddress=prop.getProperty("JTSIP");
+	String strJTSPort=prop.getProperty("JTSPORT");
+	int iJTSPort  = Integer.parseInt(strJTSPort);
+	String strUserName=prop.getProperty("USERNAME");
+	String strPassword=prop.getProperty("PASSWORD");
+	//String strPassword=PropertiesEncryption.decrypt(strPassword1);
+	//WriteLog("PasswordForAmanIs "+strPassword);
+	String strUserProfile_table=prop.getProperty("UserProfileMasterTable");
+
+	String inputXMLConnect="";
+	String outputXMLConnect ="";
+	String var ="";
+	String DocumentIndex="";
+	String DocumentName="";
+	boolean sessionPresent=false;
 	
-		// Checking whether the session exists in WFSESSIONVIEW
-		String paramsCheck = "USERNAME=="+strUserName, sSessionID = "";
+	XMLParser xmlParserData=null;
+	XMLParser objXmlParser=null;
+	
+	String DataDefIndex="";
+	String IndexId="";
+	String IndexName="";
+	
+	//Kamran 13072022
+	String DataDefName="";
+	String CreationDateTime="";
+	String ParentFolderName="";
+	//End
+	String sSessionID;
+	if(session.getAttribute("SessionIdForCollection")==null)
+	{
+		sSessionID="";
+		WriteLog("sessionIdIsNullForPage");
+	}
+	else
+	{
+		sSessionID=(String)session.getAttribute("SessionIdForCollection");
+		WriteLog("sessionIdIsNotNullForThis");
+	}
+	LinkedHashMap<Integer, String> hmap = new LinkedHashMap<Integer, String>();
+	LinkedHashMap<Integer, String> hdocumentMap = new LinkedHashMap<Integer, String>();
+	
+	boolean lastDataClass=false; // to check if the last data class is being fetched
+	
+	boolean endOfDocs=false;	//to check if last slot is less than 10
+	
+	boolean docsInLocalMap=false; // to check if documnets are there in local map
+	
+	boolean nextInLocal=false;	// to check on clicking next if data class is going to be fetched or documents from local map are going to be fetched
+	
+	boolean endOfEverything=false;	//no document is being left
+	
+	int LastIndexFetched=0;
+	int DataClassTreeMapSize=0;
+	xmlParserData=new XMLParser();
+	String ParameterPassed="";
+	String ParamValue="";
+	
+	WriteLog("FetchDataClass"+request.getParameter("FetchDataClass"));
+	
+	WriteLog("PreviousClicked"+request.getParameter("PreviousClicked"));
+	
+	WriteLog("nextInLocal"+request.getParameter("nextInLocal"));
+	
+	if(request.getParameter("FetchDataClass")==null && request.getParameter("PreviousClicked")==null && request.getParameter("nextInLocal")==null)
+	{
+	
+		//First check the session exist in WFsession View or not 
+		String paramsCheck = "USERNAME=="+strUserName;
 		String inputXmlForSessionIndex="<?xml version='1.0'?><APSelectWithNamedParam_Input><Option>APSelectWithNamedParam</Option><Query>SELECT S.SessionID FROM WFSESSIONVIEW S with (nolock),PDBUser U with (nolock) WHERE S.UserID=U.UserIndex AND UserName=:USERNAME</Query><Params>"+paramsCheck+"</Params><EngineName>"+strCabName+"</EngineName></APSelectWithNamedParam_Input>";
 		
 		WriteLog("inputXmlForSessionIndex"+inputXmlForSessionIndex);
@@ -80,21 +260,592 @@
 			}
 		}
 		
-		if(sessionPresent){
-			
-			
-			
-			
-			
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			ParameterPassed = (String) parameterNames.nextElement();
+			ParamValue=request.getParameter(ParameterPassed);
 		}
 		
-		
+		//WriteLog("maincode value check"+mainCodeValue);
+		if(sessionPresent){
+			
+			WriteLog("success : session ID" + sSessionID);
+				//APSelect to get the dataclass names applicable on the profile sent
+				String params ="";
+				String PROFILENAME =request.getParameter("PROFILE");
+				
+				String strQuery="SELECT DATACLASS from "+strUserProfile_table+" WHERE PROFILENAME = :PROFILENAME order by DATACLASS";	
+				params = "PROFILENAME=="+PROFILENAME;
+				
+				String strInputXML = "<?xml version='1.0'?><APSelectWithNamedParam_Input><Option>APSelectWithNamedParam</Option><Query>" + strQuery + "</Query><Params>"+params+"</Params><EngineName>" +strCabName+ "</EngineName><SessionId>" + sSessionID + "</SessionId></APSelectWithNamedParam_Input>";
+				
+				WriteLog("\n AP select input\n"+strInputXML);
+				String strOutputXML = WFCallBroker.execute(strInputXML,strJtsAddress,iJTSPort,1);
+
+				WriteLog("\n AP select output\n"+strOutputXML);
+				
+				xmlParserData.setInputXML((strOutputXML));
+				int recordcount=0;
+				recordcount=Integer.parseInt(xmlParserData.getValueOf("TotalRetrieved"));
+				String subXML="";
+				String mainCodeValueCheck = xmlParserData.getValueOf("MainCode");
+				int totalCountFromDataClassQuery = Integer.parseInt(xmlParserData.getValueOf("TotalRetrieved"));
+				WriteLog("\n totalCountFromDataClassQuery\n"+totalCountFromDataClassQuery);
+				if(mainCodeValueCheck.equals("0") && totalCountFromDataClassQuery>0)
+				{
+					String Dataclass="";
+					for(int k=0; k<recordcount; k++)
+					{
+						subXML = xmlParserData.getNextValueOf("Record");
+						objXmlParser = new XMLParser(subXML);
+						Dataclass=objXmlParser.getValueOf("DATACLASS");		
+						hmap.put(k, Dataclass);
+					}
+					
+				}
+				else
+				{
+					WriteLog("\n hmap Size "+hmap.size());					
+					WriteLog("Failure : Unable to get dataclass " + mainCodeValueCheck);
+					%>
+					<script language="javascript">
+					alert("No result found for specified criteria.Please check the input parameters.");
+					</script>
+					<%
+					return;
+					
+				}
+				
+				//NGOGetDataDefIdForName API to get datadef index
+				session.setAttribute("DataClassTreeMapSize",hmap.size());
+				session.setAttribute("DataClassTreeMap",hmap);
+				boolean isDocFound=false;
+				//int indexForDataClasses;
+				
+				//By stutee.mishra starts here
+				//NGOGetDataDefProperty API to get field details
+				
+				DataDefIndex =request.getParameter("dataClassID");
+				WriteLog("Stutee, DataDefIndex: "+DataDefIndex);
+				String finalSearchString =request.getParameter("finalSearchParamStr");
+				WriteLog("Stutee, finalSearchString: "+finalSearchString);
+				String arr[] = finalSearchString.split("~");
+				String searchCriteria = "";
+				
+				String strInputXMLDataDef ="<? Xml version=\"1.0\"?><NGOGetDataDefProperty_Input><Option>NGOGetDataDefProperty</Option><CabinetName>"+strCabName+"</CabinetName><UserDBId>"+sSessionID+"</UserDBId><DataDefIndex>"+DataDefIndex+"</DataDefIndex></NGOGetDataDefProperty_Input>";
+				WriteLog("Input XML for NGOGetDataDefProperty.. "+strInputXMLDataDef);
+				
+				String strOutputXMLDataDef = WFCallBroker.execute(strInputXMLDataDef,strJtsAddress,iJTSPort,1);
+				WriteLog("Output XML for NGOGetDataDefProperty.. "+strOutputXMLDataDef);
+
+				xmlParserData.setInputXML((strOutputXMLDataDef));
+				
+				int countwhilchk = 0;
+				String rowVal="";
+				String searchValue = "";
+				while(strOutputXMLDataDef.contains("<Field>"))
+				{
+					rowVal = strOutputXMLDataDef.substring(strOutputXMLDataDef.indexOf("<Field>"),strOutputXMLDataDef.indexOf("</Field>")+"</Field>".length());
+					
+					IndexName = (rowVal.contains("<IndexName>")) ? rowVal.substring(rowVal.indexOf("<IndexName>")+"</IndexName>".length()-1,rowVal.indexOf("</IndexName>")):"";
+					WriteLog( "\nIndexName: "+IndexName);
+					
+					//if IndexName equals cifid/cif_id or agreement number get index id and send to search document api
+					//session.setAttribute("ParameterPassed",ParameterPassed);
+					WriteLog("ParameterPassed: "+ParameterPassed);
+					
+					for(int x = 0; x<arr.length; x++){
+						if(!arr[x].equalsIgnoreCase("~")){
+							String dataFieldName = arr[x].split(":")[0];
+							session.setAttribute("Stutee, ParameterPassed: ",dataFieldName);
+							if(dataFieldName.equalsIgnoreCase(IndexName))
+							{
+								IndexId = (rowVal.contains("<IndexId>")) ? rowVal.substring(rowVal.indexOf("<IndexId>")+"</IndexId>".length()-1,rowVal.indexOf("</IndexId>")):"";
+								WriteLog("Index ID before search  "+IndexId);
+								//NGOSearchDocumentExt API to get document indexes
+								searchValue=arr[x].split(":")[1];
+								session.setAttribute("searchValue",searchValue);
+								searchCriteria = searchCriteria+"<DataDefIndex>"+DataDefIndex+"</DataDefIndex><IndexId>"+IndexId+"</IndexId><Operator>=</Operator><IndexValue>"+searchValue+"</IndexValue>";
+								if(x==(arr.length-1))
+									searchCriteria = searchCriteria+"<JoinCondition></JoinCondition>";
+								else
+									searchCriteria = searchCriteria+"<JoinCondition>AND</JoinCondition>";
+								break;
+							}
+						}
+					}
+					/*if(ParameterPassed.equalsIgnoreCase(IndexName))
+					{
+						IndexId = (rowVal.contains("<IndexId>")) ? rowVal.substring(rowVal.indexOf("<IndexId>")+"</IndexId>".length()-1,rowVal.indexOf("</IndexId>")):"";
+						
+						
+						WriteLog("Index ID before search  "+IndexId);
+						//NGOSearchDocumentExt API to get document indexes
+						searchValue="0103158";
+						session.setAttribute("searchValue",searchValue);
+						break;
+					}*/	
+					strOutputXMLDataDef = strOutputXMLDataDef.substring(strOutputXMLDataDef.indexOf("</Field>")+8);
+				}	
+				String sInputSearchDocument = "<?xml version=\"1.0\"?><NGOSearchDocumentExt_Input><Option>NGOSearchDocumentExt</Option><CabinetName>"+strCabName+"</CabinetName><UserDBId>"+sSessionID+"</UserDBId><SearchText></SearchText><Rank>Y</Rank><SearchOnPreviousVersions>N</SearchOnPreviousVersions><LookInFolder>0</LookInFolder><IncludeSubFolder>Y</IncludeSubFolder><Name></Name><Owner></Owner><CreationDateRange></CreationDateRange><ExpiryDateRange></ExpiryDateRange><AccessedDateRange></AccessedDateRange><RevisedDateRange></RevisedDateRange><DataDefCriterion><DataDefCriteria>"+searchCriteria+"</DataDefCriteria></DataDefCriterion><SearchScope>0</SearchScope><PreviousList></PreviousList><SearchOnAlias>N</SearchOnAlias><Keywords></Keywords><GlobalIndexCriterion></GlobalIndexCriterion><ReferenceFlag>B</ReferenceFlag><SortOrder>A</SortOrder><GroupIndex>0</GroupIndex><StartFrom>1</StartFrom><NoOfRecordsToFetch>100</NoOfRecordsToFetch><OrderBy>5</OrderBy><CheckOutStatus></CheckOutStatus><MaximumHitCountFlag>Y</MaximumHitCountFlag><CheckOutByUser></CheckOutByUser><DataAlsoFlag>N</DataAlsoFlag><CreatedByAppName></CreatedByAppName><Author></Author><AnnotationFlag>Y</AnnotationFlag><LinkDocFlag>Y</LinkDocFlag><PrevDocIndex>0</PrevDocIndex><IncludeSystemFolder>NN</IncludeSystemFolder><ReportFlag>N</ReportFlag><ThesaurusFlag>N</ThesaurusFlag></NGOSearchDocumentExt_Input>";
 	
-	} 
-	catch(Exception e){    		
-		// WriteLog("Exception occured::" + e);
-		out.println("Exception occured::" + e);
+				WriteLog("Input XML for NGOSearchDocumentExt.. "+sInputSearchDocument);
+				
+				String sOutputSearchDocument = WFCallBroker.execute(sInputSearchDocument,strJtsAddress,iJTSPort,1);;
+				WriteLog("Input XML for NGOSearchDocumentExt.. "+sOutputSearchDocument);
+				
+				xmlParserData.setInputXML((sOutputSearchDocument));
+				
+				String StatusCode = xmlParserData.getValueOf("Status");
+				String NoOfRecordsFetched = xmlParserData.getValueOf("NoOfRecordsFetched");
+				int NoOfRecordsFetchedInt  = Integer.parseInt(NoOfRecordsFetched);
+			
+				if ("0".equalsIgnoreCase(StatusCode))
+				{
+					if(!("0".equalsIgnoreCase(NoOfRecordsFetched)))
+					{
+						//get all documents and display	
+						String rowValDocList="";
+						while(sOutputSearchDocument.contains("<SearchResult>"))
+						{
+							rowValDocList = sOutputSearchDocument.substring(sOutputSearchDocument.indexOf("<SearchResult>"),sOutputSearchDocument.indexOf("</SearchResult>")+"</SearchResult>".length());
+							
+							DocumentIndex = (rowValDocList.contains("<DocumentIndex>")) ? rowValDocList.substring(rowValDocList.indexOf("<DocumentIndex>")+"</DocumentIndex>".length()-1,rowValDocList.indexOf("</DocumentIndex>")):"";
+							
+							DocumentName = (rowValDocList.contains("<DocumentName>")) ? rowValDocList.substring(rowValDocList.indexOf("<DocumentName>")+"</DocumentName>".length()-1,rowValDocList.indexOf("</DocumentName>")):"";
+							
+							//Kamran 13072022
+							 DataDefName = (rowValDocList.contains("<DataDefName>")) ? rowValDocList.substring(rowValDocList.indexOf("<DataDefName>")+"</DataDefName>".length()-1,rowValDocList.indexOf("</DataDefName>")):"";
+							
+							 CreationDateTime = (rowValDocList.contains("<CreationDateTime>")) ? rowValDocList.substring(rowValDocList.indexOf("<CreationDateTime>")+"</CreationDateTime>".length()-1,rowValDocList.indexOf("</CreationDateTime>")):"";
+							 
+							 String ParentFolderId = (rowValDocList.contains("<ParentFolderIndex>")) ? rowValDocList.substring(rowValDocList.indexOf("<ParentFolderIndex>")+"</ParentFolderIndex>".length()-1,rowValDocList.indexOf("</ParentFolderIndex>")):"";
+							 
+							 //code by stutee.mishra for ParentFolderName starts here.
+							 
+							 String QueryForName = "select Name from PDBFolder where FolderIndex ="+ParentFolderId;
+							String sOutputForNameXML="";
+							String sInputForNameXML="";
+							sInputForNameXML = "<?xml version='1.0'?><APSelectWithColumnNames_Input><Option>APSelectWithColumnNames</Option><Query>" + QueryForName + "</Query><EngineName>" + strCabName + "</EngineName></APSelectWithColumnNames_Input>";
+							WriteLog("sInputForNameXML -->"+sInputForNameXML);
+
+							sOutputForNameXML = WFCallBroker.execute(sInputForNameXML,strJtsAddress,iJTSPort,1);;
+							WriteLog("sOutputForNameXML -->"+sOutputForNameXML);
+
+							XMLParser xmlParserForNameData=new XMLParser();	
+							xmlParserForNameData.setInputXML((sOutputForNameXML));
+											
+							//String MainCode = xmlParserForNameData.getValueOf("MainCode");
+							//String TotalRetrieved = xmlParserForNameData.getValueOf("TotalRetrieved");
+							
+
+							if ("0".equalsIgnoreCase(xmlParserForNameData.getValueOf("MainCode"))){
+								if(!("0".equalsIgnoreCase(xmlParserForNameData.getValueOf("TotalRetrieved")))){
+									String records = "";
+									while(sOutputForNameXML.contains("<Record>"))
+									{
+										records = sOutputForNameXML.substring(sOutputForNameXML.indexOf("<Record>"),sOutputForNameXML.indexOf("</Record>")+"</Record>".length());
+										
+										ParentFolderName = (records.contains("<Name>")) ? records.substring(records.indexOf("<Name>")+"</Name>".length()-1,records.indexOf("</Name>")):"";
+										
+										sOutputForNameXML = sOutputForNameXML.substring(sOutputForNameXML.indexOf("</Record>")+9);
+									}
+								}
+							}
+							WriteLog("ParentFolderName -->"+ParentFolderName);
+							 
+							 //end.
+							 
+							//Parsing Date
+							String sDate1=CreationDateTime;
+							Date date1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate1);
+							SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+							CreationDateTime = formatter.format(date1);
+							//End
+							
+							WriteLog( "\nDocumentIndex: "+DocumentIndex);
+							WriteLog( "\nDocumentName: "+DocumentName);
+							//Kamran 13072022
+							WriteLog( "\nDataclassName: "+DataDefName);
+							WriteLog( "\nDocumentCreationDate: "+CreationDateTime);
+							//End
+							sOutputSearchDocument = sOutputSearchDocument.substring(sOutputSearchDocument.indexOf("</SearchResult>")+15);
+							//Kamran 13072022
+							//Removing this one -- Kamran
+							//	hdocumentMap.put(Integer.parseInt(DocumentIndex), DocumentName);	
+							//Adding this one -- Kamran
+							hdocumentMap.put(Integer.parseInt(DocumentIndex), DocumentName+"<td>"+DataDefName+"</td><td>"+CreationDateTime+"</td><td>"+ParentFolderName+"</td>");  
+							//End
+						}
+						isDocFound=true;
+					}
+					else
+					{
+						if(!isDocFound)//means if it will set only if isDocFound is not true menas isDocFound is false and still document not found if it is find previously then this flag will not be set to false if it is not found in other data class
+						isDocFound=false;									
+					}
+					if(hdocumentMap.size()>=NoOfRecordsFetchedInt){
+						session.setAttribute("SessionDocumentMap",hdocumentMap);
+						//session.setAttribute("DataClassIndex",indexForDataClasses);
+						if(hdocumentMap.size()==NoOfRecordsFetchedInt)
+						{
+							startIndex=0;
+							endIndex=NoOfRecordsFetchedInt;
+						}
+						else
+						{
+							startIndex=0;
+							endIndex=NoOfRecordsFetchedInt;
+							Integer arrKey[]=hdocumentMap.keySet().toArray(new Integer[0]);
+							String value="";
+							for(int k=NoOfRecordsFetchedInt;k<hdocumentMap.size();k++)
+							{
+								value=hdocumentMap.get(arrKey[k]);
+								nTreeMap.put(arrKey[k],value);
+							}
+						}
+						session.setAttribute("ExcessDocumentsTreeMap",nTreeMap);
+					}
+					
+					WriteLog("hdocumentMapSize for First Go"+hdocumentMap.size());
+					if(hdocumentMap.size()>=1){
+						//indexForDataClasses=hmap.size();
+					}
+					else{
+						WriteLog("No documents found.");
+					}
+					
+				}
+				
+				//end.
+				
+				if(!isDocFound)
+				{
+						%>
+						<script type="text/javascript">
+						alert("No Documents found for given criteria.")
+						</script>
+						<%
+						return;
+				}
+				WriteLog("Setting session ");
+				session.setAttribute("SessionIdForCollection",sSessionID);
+				WriteLog("Setting has been set "+session.getAttribute("SessionIdForCollection"));
+				pageNo=1;
+				session.setAttribute("pageNo",pageNo);
+			}
+			else{
+				//WriteLog("Failure : Unable to get session " + mainCodeValue1);
+			}
 	}
+	else if(request.getParameter("FetchDataClass")!=null)
+	{
+		LastIndexFetched=(Integer)session.getAttribute("DataClassIndex");
+		WriteLog("LastIndexFetched"+LastIndexFetched);
+		DataClassTreeMapSize=(Integer)session.getAttribute("DataClassTreeMapSize");
+		pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		hmap=(LinkedHashMap<Integer,String>)session.getAttribute("DataClassTreeMap");
+		nTreeMap=(LinkedHashMap<Integer,String>)session.getAttribute("ExcessDocumentsTreeMap");
+		hdocumentMap.putAll(nTreeMap);
+		nTreeMap.clear();
+		for(int indexForDataClasses=LastIndexFetched+1; indexForDataClasses < DataClassTreeMapSize; indexForDataClasses++)
+		{
+			String sInputDataDefName = "<? Xml version=\"1.0\"?><NGOGetDataDefIdForName_Input><Option>NGOGetDataDefIdForName</Option><CabinetName>"+strCabName+"</CabinetName><UserDBId>"+sSessionID+"</UserDBId><DataDefName>"+hmap.get(indexForDataClasses)+"</DataDefName></NGOGetDataDefIdForName_Input>";
+			
+			WriteLog("Input XML for NGOGetDataDefIdForName"+sInputDataDefName);
+			
+			String sOutputDataDefName = WFCallBroker.execute(sInputDataDefName,strJtsAddress,iJTSPort,1);
+			WriteLog("Output XML for NGOGetDataDefIdForName"+sOutputDataDefName);
+			
+			xmlParserData.setInputXML((sOutputDataDefName));
+			
+			DataDefIndex = xmlParserData.getValueOf("DataDefIndex");
+			WriteLog("Datadefindex is.. "+DataDefIndex);
+			
+			//NGOGetDataDefProperty API to get field details
+		
+			String strInputXMLDataDef ="<? Xml version=\"1.0\"?><NGOGetDataDefProperty_Input><Option>NGOGetDataDefProperty</Option><CabinetName>"+strCabName+"</CabinetName><UserDBId>"+sSessionID+"</UserDBId><DataDefIndex>"+DataDefIndex+"</DataDefIndex></NGOGetDataDefProperty_Input>";
+			WriteLog("Input XML for NGOGetDataDefProperty.. "+strInputXMLDataDef);
+			
+			String strOutputXMLDataDef = WFCallBroker.execute(strInputXMLDataDef,strJtsAddress,iJTSPort,1);
+			WriteLog("Output XML for NGOGetDataDefProperty.. "+strOutputXMLDataDef);
 
+			xmlParserData.setInputXML((strOutputXMLDataDef));
+			DataDefIndex = xmlParserData.getValueOf("DataDefIndex");
+			
+			int countwhilchk = 0;
+			String rowVal="";
+			String searchValue = "";
+			while(strOutputXMLDataDef.contains("<Field>"))
+			{
+				WriteLog("Inside While of next");
+				rowVal = strOutputXMLDataDef.substring(strOutputXMLDataDef.indexOf("<Field>"),strOutputXMLDataDef.indexOf("</Field>")+"</Field>".length());
+				
+				IndexName = (rowVal.contains("<IndexName>")) ? rowVal.substring(rowVal.indexOf("<IndexName>")+"</IndexName>".length()-1,rowVal.indexOf("</IndexName>")):"";
+				WriteLog( "\nIndexName: "+IndexName);
+				
+				//if IndexName equals cifid/cif_id or agreement number get index id and send to search document api
+				ParameterPassed=(String)session.getAttribute("ParameterPassed");
+				if(ParameterPassed.equalsIgnoreCase(IndexName))
+				{
+					IndexId = (rowVal.contains("<IndexId>")) ? rowVal.substring(rowVal.indexOf("<IndexId>")+"</IndexId>".length()-1,rowVal.indexOf("</IndexId>")):"";
+					
+					
+					WriteLog("Index ID before search  "+IndexId);
+					searchValue=(String)session.getAttribute("searchValue");
+					WriteLog("Searchvaluefornext"+searchValue);
+					break;
+				}
+				strOutputXMLDataDef = strOutputXMLDataDef.substring(strOutputXMLDataDef.indexOf("</Field>")+8);
+			}		
+					String sInputSearchDocument = "<?xml version=\"1.0\"?><NGOSearchDocumentExt_Input><Option>NGOSearchDocumentExt</Option><CabinetName>"+strCabName+"</CabinetName><UserDBId>"+sSessionID+"</UserDBId><SearchText></SearchText><Rank>Y</Rank><SearchOnPreviousVersions>N</SearchOnPreviousVersions><LookInFolder>0</LookInFolder><IncludeSubFolder>Y</IncludeSubFolder><Name></Name><Owner></Owner><CreationDateRange></CreationDateRange><ExpiryDateRange></ExpiryDateRange><AccessedDateRange></AccessedDateRange><RevisedDateRange></RevisedDateRange><DataDefCriterion><DataDefCriteria><DataDefIndex>"+DataDefIndex+"</DataDefIndex><IndexId>"+IndexId+"</IndexId><Operator>=</Operator><IndexValue>"+searchValue+"</IndexValue><JoinCondition></JoinCondition></DataDefCriteria></DataDefCriterion><SearchScope>0</SearchScope><PreviousList></PreviousList><SearchOnAlias>N</SearchOnAlias><Keywords></Keywords><GlobalIndexCriterion></GlobalIndexCriterion><ReferenceFlag>B</ReferenceFlag><SortOrder>A</SortOrder><GroupIndex>0</GroupIndex><StartFrom>1</StartFrom><NoOfRecordsToFetch>100</NoOfRecordsToFetch><OrderBy>5</OrderBy><CheckOutStatus></CheckOutStatus><MaximumHitCountFlag>Y</MaximumHitCountFlag><CheckOutByUser></CheckOutByUser><DataAlsoFlag>N</DataAlsoFlag><CreatedByAppName></CreatedByAppName><Author></Author><AnnotationFlag>Y</AnnotationFlag><LinkDocFlag>Y</LinkDocFlag><PrevDocIndex>0</PrevDocIndex><IncludeSystemFolder>NN</IncludeSystemFolder><ReportFlag>N</ReportFlag><ThesaurusFlag>N</ThesaurusFlag></NGOSearchDocumentExt_Input>";
+		
+					WriteLog("Input XML for NGOSearchDocumentExt.. "+sInputSearchDocument);
+					
+					String sOutputSearchDocument = WFCallBroker.execute(sInputSearchDocument,strJtsAddress,iJTSPort,1);;
+					WriteLog("Input XML for NGOSearchDocumentExt.. "+sOutputSearchDocument);
+					
+					xmlParserData.setInputXML((sOutputSearchDocument));
+					
+					String StatusCode = xmlParserData.getValueOf("Status");
+					String NoOfRecordsFetched = xmlParserData.getValueOf("NoOfRecordsFetched");
+				
+					if ("0".equalsIgnoreCase(StatusCode))
+					{
+						if(!("0".equalsIgnoreCase(NoOfRecordsFetched))){
+							
+						//get all documents and display	
+							String rowValDocList="";
+							WriteLog("NoOfRecordsFetchedLoop");
+							while(sOutputSearchDocument.contains("<SearchResult>"))
+							{
+								rowValDocList = sOutputSearchDocument.substring(sOutputSearchDocument.indexOf("<SearchResult>"),sOutputSearchDocument.indexOf("</SearchResult>")+"</SearchResult>".length());
+								
+								DocumentIndex = (rowValDocList.contains("<DocumentIndex>")) ? rowValDocList.substring(rowValDocList.indexOf("<DocumentIndex>")+"</DocumentIndex>".length()-1,rowValDocList.indexOf("</DocumentIndex>")):"";
+								
+								DocumentName = (rowValDocList.contains("<DocumentName>")) ? rowValDocList.substring(rowValDocList.indexOf("<DocumentName>")+"</DocumentName>".length()-1,rowValDocList.indexOf("</DocumentName>")):"";
+								
+								//Kamran 13072022
+								DataDefName = (rowValDocList.contains("<DataDefName>")) ? rowValDocList.substring(rowValDocList.indexOf("<DataDefName>")+"</DataDefName>".length()-1,rowValDocList.indexOf("</DataDefName>")):"";
+										
+										 
+								CreationDateTime = (rowValDocList.contains("<CreationDateTime>")) ? rowValDocList.substring(rowValDocList.indexOf("<CreationDateTime>")+"</CreationDateTime>".length()-1,rowValDocList.indexOf("</CreationDateTime>")):"";
+										 
+								//Parsing Date
+								String sDate1=CreationDateTime;
+								Date date1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate1);
+								SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+								CreationDateTime = formatter.format(date1);
+								//End
+								
+								WriteLog( "\nDocumentIndex: "+DocumentIndex);
+								WriteLog( "\nDocumentName: "+DocumentName);
+								//Kamran 13072022
+								WriteLog( "\nDataclassName: "+DataDefName);
+								WriteLog( "\nDocumentCreationDate: "+CreationDateTime);
+								//End
+								sOutputSearchDocument = sOutputSearchDocument.substring(sOutputSearchDocument.indexOf("</SearchResult>")+15);
+								//Kamran 13072022
+								//Removing this one -- Kamran
+								//	hdocumentMap.put(Integer.parseInt(DocumentIndex), DocumentName);	
+								//Adding this one -- Kamran
+								hdocumentMap.put(Integer.parseInt(DocumentIndex), DocumentName+"<td>"+DataDefName+"</td><td>"+CreationDateTime+"</td>");  
+								//End	
+								WriteLog("SizeOf"+hdocumentMap.size());
+							}
+						if(hdocumentMap.size()>=10)
+						{
+							session.setAttribute("SessionDocumentMap",hdocumentMap);
+							session.setAttribute("DataClassIndex",indexForDataClasses);
+							if(hdocumentMap.size()==10)
+							{
+								startIndex=0;
+								endIndex=10;
+							}
+							else
+							{
+								startIndex=0;
+								endIndex=10;
+								Integer arrKey[]=hdocumentMap.keySet().toArray(new Integer[0]);
+								String value="";
+								for(int k=10;k<hdocumentMap.size();k++)
+								{
+									value=hdocumentMap.get(arrKey[k]);
+									nTreeMap.put(arrKey[k],value);
+								}
+							}
+							session.setAttribute("ExcessDocumentsTreeMap",nTreeMap);
+						}
+						
+							WriteLog("hdocumentMapSizeFurtherLoop"+hdocumentMap.size());
+						if(hdocumentMap.size()>=10)
+						{
+							indexForDataClasses=hmap.size();
+						}
+						
+					}
+						else{
+							WriteLog("No documents found.");
+						}
+					}
+					WriteLog("Sajan Index "+indexForDataClasses);
+						if(indexForDataClasses==hmap.size()-1)
+							{
+								session.setAttribute("DataClassIndex",indexForDataClasses);
+								lastDataClass=true;
+								WriteLog("ThisIsLastDataClass");
+								if(hdocumentMap.size()<10)
+								{
+									endOfDocs=true;
+									startIndex=0;
+									endIndex=hdocumentMap.size();
+								}
+								else if(hdocumentMap.size()==10)
+								{
+									endOfDocs=true;
+								}
+								else
+								{
+									docsInLocalMap=true;
+								}
+							}
+				countwhilchk++;
+			//}
+		}
+	}
+	if(request.getParameter("FetchNextPage")==null && request.getParameter("PreviousClicked")==null && request.getParameter("nextInLocal")==null)
+	{
+		WriteLog("Inside FetchNextPage111->>>>>>>>>>>>>");
+		Integer arrKey1[]=hdocumentMap.keySet().toArray(new Integer[0]);
+		String valueOfMap="";
+			for(int p=startIndex;p<endIndex;p++)
+			{
+				valueOfMap=hdocumentMap.get(arrKey1[p]);
+				mapToDisplay.put(arrKey1[p],valueOfMap);
+			}
+		WriteLog("Maptodisplaysize"+mapToDisplay.size());
+		localMap.putAll(mapToDisplay);
+		session.setAttribute("localMap",localMap);
+		WriteLog("LocalMapSize"+localMap.size());
+			
+	}
+	else if(request.getParameter("FetchNextPage")!=null)
+	{
+		WriteLog("Inside FetchNextPage222->>>>>>>>>>>>>");
+		nTreeMap=(LinkedHashMap<Integer,String>)session.getAttribute("ExcessDocumentsTreeMap");
+		WriteLog("nTreeSize"+nTreeMap.size());
+		Integer arrKey1[]=nTreeMap.keySet().toArray(new Integer[0]);
+		String valueOfMap="";
+		startIndex=0;
+		pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		endIndex=nTreeMap.size();
+			for(int p=startIndex;p<endIndex;p++)
+			{
+				valueOfMap=nTreeMap.get(arrKey1[p]);
+				mapToDisplay.put(arrKey1[p],valueOfMap);
+			}
+			localMap.putAll(mapToDisplay);
+			WriteLog("MapToDisplaySizeforNTreeElements"+mapToDisplay.size());
+			lastDataClass=true;
+			session.setAttribute("localMap",localMap);
+			WriteLog("LocalMapSizeForLastPage"+localMap.size());
+	}
+	
+	if(request.getParameter("PreviousClicked")!=null || request.getParameter("nextInLocal")!=null)
+	{
+		WriteLog("LocalMapSize"+localMap.size());
+		pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		startIndex=(pageNo*10)-10;
+		endIndex=pageNo*10;
+		LastIndexFetched=(Integer)session.getAttribute("DataClassIndex");
+		DataClassTreeMapSize=(Integer)session.getAttribute("DataClassTreeMapSize");
+		WriteLog("LastIndexFetched"+LastIndexFetched);
+		WriteLog("DataClassTreeMapSize"+DataClassTreeMapSize);
+		if(localMap.size()<endIndex)
+		{
+			endIndex=localMap.size();
+			lastDataClass=true;
+		}
+		else if(LastIndexFetched+1!=DataClassTreeMapSize && localMap.size()==endIndex)
+		{
+			nextInLocal=false;
+		}
+		else if(localMap.size()==endIndex)
+		{
+			lastDataClass=true;
+			docsInLocalMap=false;
+			
+		}
+		else
+		{
+			WriteLog("ThisIsElse");
+			nextInLocal=true;
+		}
+		Integer arrKey1[]=localMap.keySet().toArray(new Integer[0]);
+		String valueOfMap="";
+			for(int p=startIndex;p<endIndex;p++)
+			{
+				valueOfMap=localMap.get(arrKey1[p]);
+				mapToDisplay.put(arrKey1[p],valueOfMap);
+			}
+	}
+	pageContext.setAttribute("docMap",mapToDisplay);
 %>
+<div class='EWHeader' style="float:left; text-align:left; overflow:none; width:100%;height:100%;border-left:0px solid grey ;border-right:0px solid grey;border-top:0px solid grey;">
+	<br><h3 style="align:left;margin: 0 0 1px 0;"><b>Document(s) List</b></h5><br><br>
 
+		<!-- Kamran 13072022 -->
+		<table id="documentlist">
+			<tr>
+				<th>Document Name</th>
+				<th>Data Class</th>
+				<th>Creation Date</th>
+				<th>Parent Folder Name</th>
+			</tr>
+		<c:forEach var="DOCMAP" items="${docMap}">
+				<tr>
+				<td style="max-width: 10px;overflow: hidden;padding:5px;">
+					<img src="\ODArchival\images\txt.gif" alt="Smiley face">
+					 <a href='/omnidocs/WebApiRequestRedirection?Application=ODArchival1&cabinetName=<%=strCabName%>&S=S&sessionIndexSet=false&Userdbid=<%=sSessionID%>&DocumentId=${DOCMAP.key}' target='frmdoclist' style="width: auto;">${DOCMAP.value}</a>
+					
+					</td></tr>
+		</c:forEach>
+	</ul>
+	</table>
+	<!-- End -->
+<br><br>
+	<%if(pageNo==1){
+		%>
+	<a class="previous" style="color:gray"></a> 
+	<%
+	}else{
+	%>
+	<a href="listOfDocumentFrame.jsp?PreviousClicked=Yes&pageNo=<%=pageNo-1%>" class="previous"></a>
+	<%}
+	
+	if(!lastDataClass){
+		if(nextInLocal)
+		{ %>
+		<a href="listOfDocumentFrame.jsp?nextInLocal=Yes&pageNo=<%=pageNo+1%>" class="next"></a>
+		<% 
+		}else{
+		WriteLog("inside 598");
+		%>
+		<a href="listOfDocumentFrame.jsp?FetchDataClass=Yes&pageNo=<%=pageNo+1%>" class="next"></a>
+		<%} 
+	}
+	else if(lastDataClass){
+		WriteLog("InLastDataClass");
+		if(docsInLocalMap)
+		{%>
+		<a href="listOfDocumentFrame.jsp?FetchNextPage=Yes&pageNo=<%=pageNo+1%>" class="next"></a>
+		<%}
+		else {%>
+		<a class="next" style="color:gray"></a>
+		<%}
+	}%>
+<br><br>
+<br>
+</div>
+</body>
+</html>
