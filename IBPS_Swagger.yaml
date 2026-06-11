@@ -1,0 +1,581 @@
+openapi: 3.0.3
+info:
+  title: Credit Card Digital IBPS, IBPS Underwriting, Limit increase, Customer Initiated Limit Increase Decision API
+  version: 1.0.0
+  description: |
+    Full strict schema for Credit Card Digital IBPS, IBPS Underwriting, Limit increase, Customer Initiated Limit Increase API.
+    Covers complete request and response payloads.
+  x-kong-target: internal
+servers:
+  - url: https://apiinternal-uat.rakbanktst.ae
+    description: UAT environment internal gateway
+    x-kong-env: uat
+x-kong-plugin-acl:
+  config:
+    allow:
+      - cram-apis-acl-grp
+paths:
+  /runtime-ccdigital-0/IBPS:
+    post:
+      summary: Execute IBPS and IBPS UW Decision
+      operationId: executeIBPSUWDecision
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request"
+      responses:
+        "200":
+          description: Successful execution
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+        "400":
+          description: Invalid request
+
+
+components:
+  schemas:
+
+    # ================= REQUEST =================
+    Request:
+      type: object
+      properties:
+        processManagerRequest:
+          type: object
+          properties:
+
+            application:
+              type: object
+              properties:
+                channel: { type: string }
+                callType: { type: string }
+                applicationNumber: { type: string }
+                requestFrom: { type: string }
+
+            applicationDetails:
+              type: object
+              properties:
+                fullEligibilityAvailed: { type: string }
+                productType: { type: string }
+                appCategory: { type: string }
+                requestedProduct: { type: string }
+                requestedLimit: { type: number, format: double }
+                subProduct: { type: string }
+                requestedCardProduct: { type: string }
+                applicationType: { type: string }
+                interestRate: { type: number, format: double }
+                customerType: { type: string }
+                finalLimit: { type: number, format: double }
+                emi: { type: number, format: double }
+                manualDeviation: { type: string }
+                applicationDate:
+                  type: string
+                  format: date-time
+                isExpenseWithinThreshold: { type: string }
+                moratoriumDays: { type: number, format: double }
+                ccbundlelimit: { type: number, format: double }
+                applicationDateNew: { type: string, format: date-time }
+
+            applicantDetails:
+              type: object
+              properties:
+                applicantId: { type: string }
+                primaryCif: { type: string }
+                refNo: { type: string }
+                wiName: { type: string }
+                custName: { type: string }
+                empType: { type: string }
+                dob: { type: string }
+                age: { type: number, format: double }
+                nationality: { type: string }
+                residentFlag: { type: string }
+                worldCheck: { type: string }
+                noOfChequeBounceInt3monInd: { type: integer }
+                noOfDdsReturnInt3monInd: { type: integer }
+                los: { type: number, format: double }
+                targetSegmentCode: { type: string }
+                currentEmpCatogery: { type: string }
+                visaExpiryDate: { type: string, format: date }
+                passportExpiryDate: { type: string, format: date }
+                emiratesVisa: { type: string }
+                designation: { type: string }
+                gender: { type: string }
+                custMobileNo: { type: string }
+                empName: { type: string }
+                empCode: { type: string }
+                typeOfCompany: { type: string }
+                industrySector: { type: string }
+                industryMacro: { type: string }
+                industryMicro: { type: string }
+                ccEmployerStatus: { type: string }
+                plEmployerStatus: { type: string }
+                plEmployerStatusExpat: { type: string }
+                plEmployerStatusNational: { type: string }
+                ces: { type: string }
+                rakelite: { type: string }
+                includedPlAloc: { type: string }
+                includedCcAloc: { type: string }
+                visaSponsor: { type: string }
+                countryOfResidence: { type: string }
+                gccNational: { type: string }
+                employerType: { type: string }
+                aecbConsent: { type: string }
+                noOfDependants: { type: integer }
+                otherHouseholdIncome: { type: number, format: double }
+                noEarningMembers: { type: integer }
+                efrNstp: { type: string }
+                marketingCode: { type: string }
+                isRakbankIban: { type: string }
+                eidIssueDate: { type: string, format: date }
+                worldCheckFlag: { type: string }
+                industrySegment: { type: string }
+                confirmedInJob: { type: string }
+                loyaltyCategory: { type: string }
+                payrollFlag: { type: string }
+                salaryWithRakbank: { type: string }
+                lob: { type: number, format: double }
+
+            internalBureauData:
+              type: object
+              properties:
+
+                internalBureau:
+                  type: object
+                  properties:
+                    ccBscoreRiskRange: { type: string }
+                    rakbankCcMob: { type: number, format: double }
+                    eliteCustomerNo: { type: string }
+                    companyFlag: { type: string }
+                    chequeReturn3mon: { type: number, format: double }
+                    ddsReturn3mon: { type: number, format: double }
+
+                internalBouncedCheques:
+                  type: object
+                  properties:
+                    companyFlag: { type: string }
+
+                internalBureauIndividualProducts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      applicantId: { type: string }
+                      internalBureauIndividualProductsId: { type: string }
+                      cardProduct: { type: string }
+                      generalStatus: { type: string }
+                      contractType: { type: string }
+                      companyFlag: { type: string }
+                      creditLimit: { type: number, format: double }
+                      phase: { type: string }
+                      cardsBScore: { type: number, format: double }
+                      mob: { type: number, format: double }
+                      linkedLiability: { type: string }
+                      considerForObligation: { type: string }
+                      noOfRepaymentsDone: { type: number, format: double }
+
+                internalBureauPipelineProducts:
+                  type: object
+                  properties:
+                    companyFlag: { type: string }
+
+                internalBureauDbrtaiCalc:
+                  type: object
+                  properties:
+                    basic: { type: number, format: double }
+                    grossSalary: { type: number, format: double }
+                    netSalaryMon1: { type: number, format: double }
+                    netSalaryMon2: { type: number, format: double }
+                    netSalaryMon3: { type: number, format: double }
+                    finalUwSalary: { type: number, format: double }
+                    uwOth: { type: number, format: double }
+
+            externalBureauData:
+              type: object
+              properties:
+
+                externalBureau:
+                  type: object
+                  properties:
+                    applicantId: { type: string }
+                    bureauoneRefNo: { type: integer }
+                    fullName: { type: string }
+                    totalOutBal: { type: number, format: double }
+                    totalOverdue: { type: number, format: double }
+                    noDefaultContract: { type: number, format: double }
+                    totalExposure: { type: number, format: double }
+                    worstCurrPay: { type: number, format: double }
+                    worstCurrPay24: { type: number, format: double }
+                    worstStatus24: { type: string }
+                    noOfRec: { type: number, format: double }
+                    chequeReturn3mon: { type: number, format: double }
+                    ddsReturn3mon: { type: number, format: double }
+                    chequeReturn6mon: { type: number, format: double }
+                    ddsReturn6mon: { type: number, format: double }
+                    noMonthsAecbHistory: { type: number, format: double }
+                    aecbScore: { type: number, format: double }
+                    range: { type: string }
+                    aecbEnquiryDate:
+                      type: string
+                      format: date-time
+                    companyFlag: { type: string }
+                    disputeAlert: { type: string }
+                    totalActiveCards: { type: number, format: double }
+
+                utilization24months:
+                  type: object
+                  properties:
+                    monthUtilization:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          cbApplicationId: { type: string }
+                          month: { type: string }
+                          creditLimit: { type: number, format: double }
+                          outstandingBalance: { type: number, format: double }
+
+                history24months:
+                  type: object
+                  properties:
+                    history:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          cbApplicationId: { type: string }
+                          monthyear: { type: string }
+                          status: { type: string }
+
+                externalBureauAccountDetails:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      applicantId: { type: string }
+                      accountType: { type: string }
+                      phase: { type: string }
+                      iban: { type: string }
+                      cbAccountNo: { type: string }
+                      dpAccountNo: { type: string }
+                      providerNo: { type: string }
+                      startDate: { type: string, format: date }
+                      closedDate: { type: string, format: date }
+                      dateOfLastUpdate: { type: string, format: date }
+
+                externalBureauSalaryDetails:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      applicantId: { type: string }
+                      cbAccountNo: { type: string }
+                      year: { type: integer }
+                      month: { type: integer }
+                      totalSalaryAmount: { type: number, format: double }
+                      noOfSalaryTransferred: { type: number, format: double }
+
+                externalBureauIndividualProducts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      applicantId: { type: string }
+                      externalBureauIndividualProductsId: { type: string }
+                      contractType: { type: string }
+                      providerNo: { type: string }
+                      phase: { type: string }
+                      roleOfCustomer: { type: string }
+                      startDate: { type: string, format: date }
+                      closeDate: { type: string, format: date }
+                      outstandingBalance: { type: number, format: double }
+                      totalAmount: { type: number, format: double }
+                      paymentsAmount: { type: number, format: double }
+                      totalNoOfInstalments: { type: number, format: double }
+                      noOfRemainingInstalments: { type: number, format: double }
+                      worstStatus: { type: string }
+                      worstStatusDate: { type: string, format: date }
+                      creditLimit: { type: number, format: double }
+                      overdueAmount: { type: number, format: double }
+                      noOfDaysPaymentDelay: { type: number, format: double }
+                      mob: { type: number, format: double }
+                      lastRepaymentDate: { type: string, format: date }
+                      currentlyCurrent: { type: string }
+                      currentUtilization: { type: number, format: double }
+                      dpd5InLast12Mon: { type: number, format: double }
+                      dpd30Last6Mon: { type: number, format: double }
+                      dpd60pInLast12Mon: { type: number, format: double }
+                      noMonthsAecbHistory: { type: number, format: double }
+                      maximumOverdueAmount: { type: number, format: double }
+                      delinquentInLast3months: { type: number, format: double }
+                      companyFlag: { type: string }
+                      considerForObligation: { type: string }
+                      duplicateFlag: { type: string }
+                      paymentFrequency: { type: string }
+                      maximumOverdueDate: { type: string, format: date }
+                      isRestructuredLoanExist: { type: string }
+                      extCurrentDpd: { type: number, format: double }
+
+                externalBureauPipelineProducts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      applicantId: { type: string }
+                      externalBureauPipelineProductsId: { type: string }
+                      pplProviderNo: { type: string }
+                      pplTypeOfContract: { type: string }
+                      pplTypeOfProduct: { type: string }
+                      pplPhase: { type: string }
+                      pplRole: { type: string }
+                      pplDateOfLastUpdate: { type: string, format: date }
+                      pplNoOfInstalments: { type: number, format: double }
+                      pplCreditLimit: { type: number, format: double }
+                      pplNoOfDaysInPipeline: { type: number, format: double }
+                      companyFlag: { type: string }
+                      pplConsiderForObligation: { type: string }
+                      pplDuplicateFlag: { type: string }
+                      pplTotalAmount: { type: number, format: double }
+
+                externalBouncedCheques:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      applicantId: { type: string }
+                      externalBouncedChequesId: { type: string }
+                      bouncedCheque: { type: string }
+                      chequeNo: { type: string }
+                      amount: { type: number, format: double }
+                      reason: { type: string }
+                      returnDate: { type: string, format: date }
+                      providerNo: { type: string, format: date }
+                      companyFlag: { type: string }
+
+                courtCase:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      codOrganization: { type: string }
+                      providerCaseNo: { type: string }
+                      referenceDate: { type: string, format: date }
+                      caseCategoryCode: { type: string }
+                      openDate: { type: string, format: date }
+                      closeDate: { type: string, format: date }
+                      caseStatusCode: { type: string }
+                      initialTotalClaimAmount: { type: number, format: double }
+                      applicantId: { type: string }
+
+            perfios:
+              type: object
+              properties:
+                stmtSalary1: { type: number, format: double }
+                stmtSalary1Date: { type: string, format: date }
+                stmtSalary2: { type: number, format: double }
+                stmtSalary2Date: { type: string, format: date }
+                stmtSalary3: { type: number, format: double }
+                stmtSalary3Date: { type: string, format: date }
+                stmtSalary4: { type: number, format: double }
+                stmtSalary4Date: { type: string, format: date }
+                stmtSalary5: { type: number, format: double }
+                stmtSalary5Date: { type: string, format: date }
+                stmtSalary6: { type: number, format: double }
+                stmtSalary6Date: { type: string, format: date }
+                stmtSalary7: { type: number, format: double }
+                stmtSalary7Date: { type: string, format: date }
+                stmtSalary8: { type: number, format: double }
+                stmtSalary8Date: { type: string, format: date }
+                stmtSalary9: { type: number, format: double }
+                stmtSalary9Date: { type: string, format: date }
+                stmtSalary10: { type: number, format: double }
+                stmtSalary10Date: { type: string, format: date }
+
+                addnPerfiosEmi1: { type: number, format: double }
+                addnPerfiosEmi2: { type: number, format: double }
+                addnPerfiosEmi3: { type: number, format: double }
+                addnPerfiosEmi4: { type: number, format: double }
+                addnPerfiosEmi5: { type: number, format: double }
+                addnPerfiosEmi6: { type: number, format: double }
+                addnPerfiosEmi7: { type: number, format: double }
+                addnPerfiosEmi8: { type: number, format: double }
+                addnPerfiosEmi9: { type: number, format: double }
+                addnPerfiosEmi10: { type: number, format: double }
+                addnPerfiosEmi11: { type: number, format: double }
+                addnPerfiosEmi12: { type: number, format: double }
+                addnPerfiosEmi13: { type: number, format: double }
+                addnPerfiosEmi14: { type: number, format: double }
+                addnPerfiosEmi15: { type: number, format: double }
+                addnPerfiosEmi16: { type: number, format: double }
+                addnPerfiosEmi17: { type: number, format: double }
+                addnPerfiosEmi18: { type: number, format: double }
+                addnPerfiosEmi19: { type: number, format: double }
+                addnPerfiosEmi20: { type: number, format: double }
+
+                addnPerfiosCc: { type: string }
+                addnPerfiosOdAmt: { type: number, format: double }
+                addnOdDate: { type: string, format: date }
+
+                jointAcct: { type: string }
+                highValueDeposit: { type: string }
+                creditAmount: { type: number, format: double }
+
+                stmtChqRtnLast3mnts: { type: number, format: double }
+                stmtChqRtnClearedIn30Last3mnts: { type: number, format: double }
+                stmtChqRtnLast1mnt: { type: number, format: double }
+                stmtChqRtnClearedIn30Last1mnt: { type: number, format: double }
+
+                stmtDdsRtnLast3mnts: { type: number, format: double }
+                stmtDdsRtnClearedIn30Last3mnts: { type: number, format: double }
+                stmtDdsRtnLast1mnt: { type: number, format: double }
+                stmtDdsRtnClearedIn30Last1mnts: { type: number, format: double }
+
+                pensioner: { type: string }
+                nameMatch: { type: string }
+                fcuIndicator: { type: string }
+                uwReqd: { type: string }
+
+                abSalRatioCriteriaMet: { type: string }
+                salWithdrawalCriteriaMet5d: { type: string }
+
+                abSalRatioM1: { type: number, format: double }
+                abSalRatioM2: { type: number, format: double }
+                abSalRatioM3: { type: number, format: double }
+                abSalRatioM4: { type: number, format: double }
+                abSalRatioM5: { type: number, format: double }
+                abSalRatioM6: { type: number, format: double }
+                abSalRatioM7: { type: number, format: double }
+
+    # ================= RESPONSE =================
+    Response:
+      type: object
+      properties:
+        processManagerResponse:
+          type: object
+          properties:
+
+            application:
+              type: object
+              properties:
+                channel: { type: string }
+                callType: { type: string }
+                applicationNumber: { type: string }
+                returnDateTime: { type: string, format: date-time }
+                systemErrorCode: { type: string }
+                systemErrorMessage: { type: string }
+                returnError:
+                  type: object
+                  properties:
+                    recordNumber: { type: string }
+
+            pmResults:
+              type: object
+              properties:
+                dbr: { type: number, format: double }
+                reasonCode: { type: string }
+                reasonDescription: { type: string }
+
+                pmDecisionResultsData:
+                  type: object
+                  properties:
+                    pmDecisionResults:
+                      type: object
+                      properties:
+                        appKey: { type: string }
+                        decisionObjective: { type: string }
+                        decisionSequenceNumber: { type: string }
+                        lastUpdateDate:
+                          type: string
+                          format: date-time
+                        defaultDecision: { type: string }
+                        defaultReason: { type: string }
+                        defaultDocument: { type: string }
+                        systemDecision: { type: string }
+                        systemDocument: { type: string }
+                        decisionNodeId: { type: string }
+                        decisionTestGroup: { type: string }
+
+                pmReasonCodesData:
+                  type: object
+                  properties:
+                    pmReasonCodes:
+                      type: object
+                      properties:
+                        decisionObjective: { type: string }
+                        decisionSequenceNumber: { type: string }
+                        sequenceNumber: { type: string }
+                        reasonDecision: { type: string }
+                        reasonCode: { type: string }
+                        reasonDescription: { type: string }
+                        criteriaName: { type: string }
+                        letterCode: { type: string }
+                        document: { type: string }
+                        letterReason: { type: string }
+
+                name: { type: string }
+
+            pmOutputs:
+              type: object
+              properties:
+                application:
+                  type: object
+                  properties:
+                    isNewScoreCard: { type: string }
+                    isReferDesignation: { type: string }
+                    output9monFtsSalReq: { type: string }
+                    outputAdditionalAmount: { type: number, format: double }
+                    outputAecbSalary1: { type: number, format: double }
+                    outputAecbSalary2: { type: number, format: double }
+                    outputAecbSalary3: { type: number, format: double }
+                    outputAecbSalaryEligible: { type: string }
+                    outputAffordableEmi: { type: number, format: double }
+                    outputAffordableRatio: { type: number, format: double }
+                    outputAge: { type: string }
+                    outputAlternateCard: { type: string }
+                    outputCcAscoreRiskRating: { type: string }
+                    outputCustomerPersonas: { type: string }
+                    outputDecision: { type: string }
+                    outputDelegationAuthority: { type: string }
+                    outputEligibleAmount: { type: number, format: double }
+
+                    outputEligibleCards:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          cardProduct: { type: string }
+                          creditLimit: { type: number, format: double }
+                          flag: { type: string }
+
+                    outputEmi: { type: number, format: double }
+                    outputExistingDbr: { type: number, format: double }
+                    outputFinalAmount: { type: number, format: double }
+                    outputFinalDbr: { type: number, format: double }
+                    outputInterestRate: { type: number, format: double }
+                    outputMaturityAge: { type: number, format: double }
+                    outputMinLimit: { type: number, format: double }
+                    outputNetSalaryDbr: { type: number, format: double }
+                    outputNofileSegment: { type: string }
+                    outputNoOfAecbHistory: { type: integer }
+                    outputNstp: { type: string }
+                    
+                    outputNstpReason:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          reasons: { type: string }
+
+                    outputNumEligibleCards: { type: integer }
+                    outputPolicySegmentation: { type: string }
+                    outputReferQueue: { type: string }
+                    outputRiskSegmentation: { type: string }
+                    outputSalTransfer: { type: string }
+                    outputSalaryMultiples: { type: number, format: double }
+                    outputSecCheckReq: { type: string }
+                    outputStressBufferAmt: { type: number, format: double }
+                    outputStressDbr: { type: number, format: double }
+                    outputTai: { type: number, format: double }
+                    outputTotalDeduction: { type: number, format: double }
