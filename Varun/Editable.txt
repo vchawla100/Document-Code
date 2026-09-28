@@ -1,2 +1,2 @@
-As per the error observed in the shared screenshot, it appears that in this scenario a card is required by customer. Therefore, as part of the offer letter update from the DEH side, the card's ECRN is also expected to be sent.
-Kindly check with the DEH team why the card ECRN is not being included in the request. This is expected to be provided along with the offer letter update.
+We are receiving the decision as 'Failure' from Eximbills side for this workitem and hence the workitem is moved to Error_handling queue.
+Eximbills team has to action on this and provide the reason why they send the error.
