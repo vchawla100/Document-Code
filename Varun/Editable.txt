@@ -1,2 +1,9 @@
-We are receiving the decision as 'Failure' from Eximbills side for this workitem and hence the workitem is moved to Error_handling queue.
-Eximbills team has to action on this and provide the reason why they send the error.
+Seek your approval on the attached PCR to create a new service request type under IBPS SRO for Remittance return.
+
+ 
+
+Justification - Implementing a dedicated Service Request (SRO) type will help to streamline and standardize the Remittance return and archival process, which is currently managed through emails. This enhancement will improve operational efficiency, strengthen process controls, ensure consistency in record management, and provide a centralized digital repository for validation, tracking, and audit purposes.
+
+ 
+
+Service Request type - Remittance return.
