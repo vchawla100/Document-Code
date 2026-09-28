@@ -1,9 +1,13 @@
-Seek your approval on the attached PCR to create a new service request type under IBPS SRO for Remittance return.
+The customer has received the offer letter acceptance email but is unable to complete the offer letter acceptance process.
+
+Kindly advise on the issue and assist us in completing the acceptance process.
 
  
 
-Justification - Implementing a dedicated Service Request (SRO) type will help to streamline and standardize the Remittance return and archival process, which is currently managed through emails. This enhancement will improve operational efficiency, strengthen process controls, ensure consistency in record management, and provide a centralized digital repository for validation, tracking, and audit purposes.
+DigitalPL-0004027321-process
 
- 
+Solution:
 
-Service Request type - Remittance return.
+IBPS will not be able to help the customer offer letter acceptance issue which you have highlighted.
+Please check with the concerned team.
+Please note that once the offer letter is accepted by the customer and status is sent to IBPS then the workitem will automatically move from Offer letter queue to next queue.
