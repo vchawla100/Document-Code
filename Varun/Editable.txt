@@ -1,5 +1,8 @@
 Seek your intervention as work item in IBPS for manual account opening is moving from ops maker queue to archival Team without reflecting the below decisions.
 
+Ops checker decision cif edit APPROVED
+Ops Maker workstep Data entry done SUBMIT
+Ops checker workstep Data entry done APPROVED
 
 Solution:
 
