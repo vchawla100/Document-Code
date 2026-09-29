@@ -1,13 +1,8 @@
-The customer has received the offer letter acceptance email but is unable to complete the offer letter acceptance process.
+Seek your intervention as work item in IBPS for manual account opening is moving from ops maker queue to archival Team without reflecting the below decisions.
 
-Kindly advise on the issue and assist us in completing the acceptance process.
-
- 
-
-DigitalPL-0004027321-process
 
 Solution:
 
-IBPS will not be able to help the customer offer letter acceptance issue which you have highlighted.
-Please check with the concerned team.
-Please note that once the offer letter is accepted by the customer and status is sent to IBPS then the workitem will automatically move from Offer letter queue to next queue.
+The data was not being saved for this work item because the server‑side validation was not executed.
+To prevent this situation from occurring again, we have implemented a preventive fix:
+If the server‑side validation is not executed, the user will not be able to complete the work item and will be required to close it.
