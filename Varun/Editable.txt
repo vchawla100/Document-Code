@@ -1,11 +1,69 @@
-Seek your intervention as work item in IBPS for manual account opening is moving from ops maker queue to archival Team without reflecting the below decisions.
+We have the below list of applications where FIRCO Status shows ‘False Positive’ in IBPS; however, alerts were NOT CLOSED BY CREDIT.
 
-Ops checker decision cif edit APPROVED
-Ops Maker workstep Data entry done SUBMIT
-Ops checker workstep Data entry done APPROVED
+DCC-0000249161-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000249229-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000249238-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000249250-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000249257-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000249258-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000250045-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000250066-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000250069-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
+DCC-0000250071-process
+
+not action by credit alert is open in firco trust
+
+system approved
+
 
 Solution:
 
-The data was not being saved for this work item because the server‑side validation was not executed.
-To prevent this situation from occurring again, we have implemented a preventive fix:
-If the server‑side validation is not executed, the user will not be able to complete the work item and will be required to close it.
+As already discussed, IBPS displays the FIRCO status on the form based on the entry available in the database table, which is updated by the FIRCO team. IBPS does not have any control over this status update.
+As also shared by your team in the email trail, the status value for these work items is "0000". Accordingly, the status is being displayed as "False Positive" on the form. Hence, the behavior observed is as per the data currently available in the table.
+It is required to investigate how the status value "0000" was updated in the table from the FIRCO side, as IBPS only reflects the status available in the database and does not perform any modification to this value.
+
